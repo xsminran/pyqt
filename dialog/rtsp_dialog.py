@@ -28,9 +28,9 @@ class Ui_Form(object):
         self.label.setMinimumSize(QtCore.QSize(0, 30))
         self.label.setMaximumSize(QtCore.QSize(16777215, 30))
         self.label.setStyleSheet("QLabel{font-family: \"Microsoft YaHei\";\n"
-"font-size: 18px;\n"
-"font-weight: bold;\n"
-"color:white;}")
+                                 "font-size: 18px;\n"
+                                 "font-weight: bold;\n"
+                                 "color:white;}")
         self.label.setObjectName("label")
         self.horizontalLayout.addWidget(self.label)
         self.rtspEdit = QtWidgets.QLineEdit(Form)
@@ -40,42 +40,42 @@ class Ui_Form(object):
         self.horizontalLayout.addWidget(self.rtspEdit)
         self.rtspButton = QtWidgets.QPushButton(Form)
         self.rtspButton.setStyleSheet("QPushButton{font-family: \"Microsoft YaHei\";\n"
-"font-size: 18px;\n"
-"font-weight: bold;\n"
-"color:white;\n"
-"text-align: center center;\n"
-"padding-left: 5px;\n"
-"padding-right: 5px;\n"
-"padding-top: 4px;\n"
-"padding-bottom: 4px;\n"
-"border-style: solid;\n"
-"border-width: 0px;\n"
-"border-color: rgba(255, 255, 255, 255);\n"
-"border-radius: 3px;\n"
-"background-color: rgba(255,255,255,30);}\n"
-"\n"
-"QPushButton:focus{outline: none;}\n"
-"\n"
-"QPushButton::pressed{font-family: \"Microsoft YaHei\";\n"
-"                     font-size: 16px;\n"
-"                     font-weight: bold;\n"
-"                     color:rgb(200,200,200);\n"
-"                     text-align: center center;\n"
-"                     padding-left: 5px;\n"
-"                     padding-right: 5px;\n"
-"                     padding-top: 4px;\n"
-"                     padding-bottom: 4px;\n"
-"                     border-style: solid;\n"
-"                     border-width: 0px;\n"
-"                     border-color: rgba(255, 255, 255, 255);\n"
-"                     border-radius: 3px;\n"
-"                     background-color:  rgba(255,255,255,150);}\n"
-"\n"
-"QPushButton::hover {\n"
-"border-style: solid;\n"
-"border-width: 0px;\n"
-"border-radius: 0px;\n"
-"background-color: rgba(255,255,255,50);}")
+                                      "font-size: 18px;\n"
+                                      "font-weight: bold;\n"
+                                      "color:white;\n"
+                                      "text-align: center center;\n"
+                                      "padding-left: 5px;\n"
+                                      "padding-right: 5px;\n"
+                                      "padding-top: 4px;\n"
+                                      "padding-bottom: 4px;\n"
+                                      "border-style: solid;\n"
+                                      "border-width: 0px;\n"
+                                      "border-color: rgba(255, 255, 255, 255);\n"
+                                      "border-radius: 3px;\n"
+                                      "background-color: rgba(255,255,255,30);}\n"
+                                      "\n"
+                                      "QPushButton:focus{outline: none;}\n"
+                                      "\n"
+                                      "QPushButton::pressed{font-family: \"Microsoft YaHei\";\n"
+                                      "                     font-size: 16px;\n"
+                                      "                     font-weight: bold;\n"
+                                      "                     color:rgb(200,200,200);\n"
+                                      "                     text-align: center center;\n"
+                                      "                     padding-left: 5px;\n"
+                                      "                     padding-right: 5px;\n"
+                                      "                     padding-top: 4px;\n"
+                                      "                     padding-bottom: 4px;\n"
+                                      "                     border-style: solid;\n"
+                                      "                     border-width: 0px;\n"
+                                      "                     border-color: rgba(255, 255, 255, 255);\n"
+                                      "                     border-radius: 3px;\n"
+                                      "                     background-color:  rgba(255,255,255,150);}\n"
+                                      "\n"
+                                      "QPushButton::hover {\n"
+                                      "border-style: solid;\n"
+                                      "border-width: 0px;\n"
+                                      "border-radius: 0px;\n"
+                                      "background-color: rgba(255,255,255,50);}")
         self.rtspButton.setObjectName("rtspButton")
         self.horizontalLayout.addWidget(self.rtspButton)
 
@@ -87,4 +87,6 @@ class Ui_Form(object):
         Form.setWindowTitle(_translate("Form", "Form"))
         self.label.setText(_translate("Form", "输入rtsp地址:"))
         self.rtspButton.setText(_translate("Form", "确认"))
+
+
 import apprcc_rc

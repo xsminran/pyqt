@@ -4,7 +4,6 @@ from PyQt5.QtCore import Qt, QPoint, QTimer, QThread, pyqtSignal
 from PyQt5.QtGui import QImage, QPixmap, QPainter, QIcon
 
 import sys
-import os
 import json
 import numpy as np
 import torch
@@ -36,17 +35,17 @@ class DetThread(QThread):
 
     def __init__(self):
         super(DetThread, self).__init__()
-        self.weights = './yolov5s.pt'           # 设置权重
-        self.current_weight = './yolov5s.pt'    # 当前权重
-        self.source = '0'                       # 视频源
-        self.conf_thres = 0.25                  # 置信度
-        self.iou_thres = 0.45                   # iou
-        self.jump_out = False                   # 跳出循环
-        self.is_continue = True                 # 继续/暂停
-        self.percent_length = 1000              # 进度条
-        self.rate_check = True                  # 是否启用延时
-        self.rate = 100                         # 延时HZ
-        self.save_fold = './result'             # 保存文件夹
+        self.weights = './yolov5s.pt'  # 设置权重
+        self.current_weight = './yolov5s.pt'  # 当前权重
+        self.source = '0'  # 视频源
+        self.conf_thres = 0.25  # 置信度
+        self.iou_thres = 0.45  # iou
+        self.jump_out = False  # 跳出循环
+        self.is_continue = True  # 继续/暂停
+        self.percent_length = 1000  # 进度条
+        self.rate_check = True  # 是否启用延时
+        self.rate = 100  # 延时HZ
+        self.save_fold = './result'  # 保存文件夹
 
     @torch.no_grad()
     def run(self,
@@ -140,11 +139,11 @@ class DetThread(QThread):
                     count += 1
                     # 每三十帧刷新一次输出帧率
                     if count % 30 == 0 and count >= 30:
-                        fps = int(30/(time.time()-start_time))
-                        self.send_fps.emit('fps：'+str(fps))
+                        fps = int(30 / (time.time() - start_time))
+                        self.send_fps.emit('fps：' + str(fps))
                         start_time = time.time()
                     if self.vid_cap:
-                        percent = int(count/self.vid_cap.get(cv2.CAP_PROP_FRAME_COUNT)*self.percent_length)
+                        percent = int(count / self.vid_cap.get(cv2.CAP_PROP_FRAME_COUNT) * self.percent_length)
                         self.send_percent.emit(percent)
                     else:
                         percent = self.percent_length
@@ -159,7 +158,8 @@ class DetThread(QThread):
                     pred = model(img, augment=augment)[0]
 
                     # Apply NMS
-                    pred = non_max_suppression(pred, self.conf_thres, self.iou_thres, classes, agnostic_nms, max_det=max_det)
+                    pred = non_max_suppression(pred, self.conf_thres, self.iou_thres, classes, agnostic_nms,
+                                               max_det=max_det)
                     # Process detections
                     for i, det in enumerate(pred):  # detections per image
                         im0 = im0s.copy()
@@ -179,7 +179,7 @@ class DetThread(QThread):
 
                     # 控制视频发送频率
                     if self.rate_check:
-                        time.sleep(1/self.rate)
+                        time.sleep(1 / self.rate)
                     self.send_img.emit(im0)
                     self.send_raw.emit(im0s if isinstance(im0s, np.ndarray) else im0s[0])
                     self.send_statistic.emit(statistic_dic)
@@ -201,7 +201,8 @@ class DetThread(QThread):
                                 # width = int(self.vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
                                 # height = int(self.vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
                                 width, height = im0.shape[1], im0.shape[0]
-                                save_path = os.path.join(self.save_fold, time.strftime('%Y_%m_%d_%H_%M_%S', time.localtime()) + '.mp4')
+                                save_path = os.path.join(self.save_fold,
+                                                         time.strftime('%Y_%m_%d_%H_%M_%S', time.localtime()) + '.mp4')
                                 self.out = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*"mp4v"), ori_fps,
                                                            (width, height))
                             self.out.write(im0)
@@ -218,7 +219,6 @@ class DetThread(QThread):
             self.send_msg.emit('%s' % e)
 
 
-
 class MainWindow(QMainWindow, Ui_mainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -227,7 +227,7 @@ class MainWindow(QMainWindow, Ui_mainWindow):
         # win10的CustomizeWindowHint模式，边框上面有一段空白。
         # 不想看到顶部空白可以用FramelessWindowHint模式，但是需要重写鼠标事件才能通过鼠标拉伸窗口，比较麻烦
         # 不嫌麻烦可以试试, 写了一半不想写了，累死人
-        self.setWindowFlags(Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint )
+        self.setWindowFlags(Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint)
         # self.setWindowFlags(Qt.FramelessWindowHint)
         # 自定义标题栏按钮
         self.minButton.clicked.connect(self.showMinimized)
@@ -243,7 +243,7 @@ class MainWindow(QMainWindow, Ui_mainWindow):
         self.comboBox.clear()
         self.pt_list = os.listdir('./pt')
         self.pt_list = [file for file in self.pt_list if file.endswith('.pt')]
-        self.pt_list.sort(key=lambda x: os.path.getsize('./pt/'+x))
+        self.pt_list.sort(key=lambda x: os.path.getsize('./pt/' + x))
         self.comboBox.clear()
         self.comboBox.addItems(self.pt_list)
         self.qtimer_search = QTimer(self)
@@ -253,8 +253,8 @@ class MainWindow(QMainWindow, Ui_mainWindow):
         # yolov5线程
         self.det_thread = DetThread()
         self.model_type = self.comboBox.currentText()
-        self.det_thread.weights = "./pt/%s" % self.model_type           # 权重
-        self.det_thread.source = '0'                                    # 默认打开本机摄像头，无需保存到配置文件
+        self.det_thread.weights = "./pt/%s" % self.model_type  # 权重
+        self.det_thread.source = '0'  # 默认打开本机摄像头，无需保存到配置文件
         self.det_thread.percent_length = self.progressBar.maximum()
         self.det_thread.send_raw.connect(lambda x: self.show_image(x, self.raw_video))
         self.det_thread.send_img.connect(lambda x: self.show_image(x, self.out_video))
@@ -416,21 +416,21 @@ class MainWindow(QMainWindow, Ui_mainWindow):
         self.iouSpinBox.setValue(conf)
         self.rateSpinBox.setValue(rate)
         self.checkBox.setCheckState(check)
-        self.det_thread.rate_check = check          # 是否启用延时
+        self.det_thread.rate_check = check  # 是否启用延时
         self.saveCheckBox.setCheckState(savecheck)
-        self.is_save()                              # 是否自动保存
+        self.is_save()  # 是否自动保存
 
     def change_val(self, x, flag):
         if flag == 'confSpinBox':
-            self.confSlider.setValue(int(x*100))
+            self.confSlider.setValue(int(x * 100))
         elif flag == 'confSlider':
-            self.confSpinBox.setValue(x/100)
-            self.det_thread.conf_thres = x/100
+            self.confSpinBox.setValue(x / 100)
+            self.det_thread.conf_thres = x / 100
         elif flag == 'iouSpinBox':
-            self.iouSlider.setValue(int(x*100))
+            self.iouSlider.setValue(int(x * 100))
         elif flag == 'iouSlider':
-            self.iouSpinBox.setValue(x/100)
-            self.det_thread.iou_thres = x/100
+            self.iouSpinBox.setValue(x / 100)
+            self.det_thread.iou_thres = x / 100
         elif flag == 'rateSpinBox':
             self.rateSlider.setValue(x)
         elif flag == 'rateSlider':
@@ -464,7 +464,7 @@ class MainWindow(QMainWindow, Ui_mainWindow):
         if not os.path.exists(open_fold):
             open_fold = os.getcwd()
         name, _ = QFileDialog.getOpenFileName(self, '选取视频或图片', open_fold, "Pic File(*.mp4 *.mkv *.avi *.flv "
-                                                                          "*.jpg *.png)")
+                                                                                 "*.jpg *.png)")
         if name:
             self.det_thread.source = name
             self.statistic_msg('加载文件：{}'.format(os.path.basename(name)))
@@ -553,7 +553,7 @@ class MainWindow(QMainWindow, Ui_mainWindow):
             self.resultWidget.clear()
             statistic_dic = sorted(statistic_dic.items(), key=lambda x: x[1], reverse=True)
             statistic_dic = [i for i in statistic_dic if i[1] > 0]
-            results = [' '+str(i[0]) + '：' + str(i[1]) for i in statistic_dic]
+            results = [' ' + str(i[0]) + '：' + str(i[1]) for i in statistic_dic]
             self.resultWidget.addItems(results)
 
         except Exception as e:
